@@ -1,0 +1,52 @@
+{
+  "name": "videojs-chrome-extension",
+  "version": "1.0.0",
+  "private": true,
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "clean": "rimraf dist",
+    "postclean": "mkdirp dist/$npm_package_name/{background,popup,client,options}",
+    "prebuild": "npm run clean",
+    "dist": "npm-run-all build ugly zip",
+    "build": "npm-run-all -p build:*",
+    "build:manifest": "node -e \"console.log(JSON.stringify(require('./src/manifest.js'), null, 2));\" > dist/$npm_package_name/manifest.json",
+    "build:chrome": "npm-run-all -p build:chrome:*",
+    "build:chrome:client": "npm-run-all -p build:chrome:client:*",
+    "build:chrome:client:js": "browserify ./src/client/index.js -o dist/$npm_package_name/client/index.js",
+    "build:chrome:client:cp": "npm-run-all -p build:chrome:client:cp:*",
+    "build:chrome:client:cp:videojs": "cp ./node_modules/video.js/dist/{video-js.min.css,video.min.js} dist/$npm_package_name/client",
+    "build:chrome:client:cp:hls": "cp ./node_modules/videojs-contrib-hls/dist/videojs-contrib-hls.min.js dist/$npm_package_name/client",
+    "build:chrome:client:html": "cp ./src/client/index.html dist/$npm_package_name/client/index.html",
+    "build:chrome:background": "browserify ./src/background/index.js -o dist/$npm_package_name/background/index.js",
+    "build:chrome:popup": "npm-run-all -p build:chrome:popup:*",
+    "build:chrome:popup:html": "cp ./src/popup/index.html dist/$npm_package_name/popup/",
+    "build:chrome:popup:js": "browserify ./src/popup/index.js -o dist/$npm_package_name/popup/index.js",
+    "build:chrome:options": "npm-run-all -p build:chrome:options:*",
+    "build:chrome:options:js": "browserify ./src/options/index.js -o dist/$npm_package_name/options/index.js",
+    "build:chrome:options:html": "cp ./src/options/index.html dist/$npm_package_name/options/index.html",
+    "build:chrome:img": "cp -R src/img dist/$npm_package_name",
+    "prewatch": "npm run clean",
+    "watch": "npm-run-all -p watch:*",
+    "watch:chrome": "nodemon --exec 'npm run --silent build:chrome' -e css,js,html --watch src",
+    "watch:manifest": "nodemon --exec 'npm run --silent build:manifest' --watch src/manifest.js",
+    "ugly": "find dist -name '*.js' | while read -r f; do uglifyjs \"$f\" -m -c --screw-ie8 -o \"$f\"; done",
+    "zip": "cd dist && zip -r -9 ./${npm_package_name}.zip ./${npm_package_name}/ && cd .."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "browserify": "^13.0.1",
+    "mkdirp": "^0.5.1",
+    "nodemon": "^1.9.2",
+    "npm-run-all": "^2.1.1",
+    "rimraf": "^2.5.2",
+    "uglify-js": "^2.6.2"
+  },
+  "dependencies": {
+    "global": "^4.3.0",
+    "video.js": "^5.10.4",
+    "videojs-contrib-hls": "^3.1.0"
+  }
+}
