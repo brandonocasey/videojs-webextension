@@ -2,17 +2,10 @@ var FileTypes = require('../file-types');
 var path = require('path');
 var querystring = require('querystring');
 
-chrome.tabs.onCreated.addListener(function(tab) {
-	handleURL(tab.url, function() {
-		changeTab(tab.url, tab);
-	});
-});
-
-chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
-	handleURL(tab.url, function() {
-		changeTab(tab.url, tab);
-	});
-});
+// if we are on firefox we only have local storage
+if (!chrome.storage.sync) {
+	chrome.storage.sync = chrome.storage.local;
+}
 
 chrome.downloads.onCreated.addListener(function(downloadItem) {
 	handleURL(downloadItem.url, function() {

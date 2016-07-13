@@ -1,5 +1,10 @@
 var document = require('global/document');
 
+// if we are on firefox we only have local storage
+if (!chrome.storage.sync) {
+  chrome.storage.sync = chrome.storage.local;
+}
+
 // when an element is changed save it to chome storage
 document.addEventListener('DOMContentLoaded', function() {
   var container = document.getElementById('container');

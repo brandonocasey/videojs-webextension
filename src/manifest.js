@@ -3,6 +3,12 @@ var FileTypes = require('./file-types.js');
 
 module.exports = {
   "manifest_version": 2,
+  // application is a work around for a bug in firefox 49 alpha
+  "applications": {
+    "gecko": {
+      "id": "nope@example.com"
+    }
+  },
   "name": pkg.name,
   "version": pkg.version,
   "background": {

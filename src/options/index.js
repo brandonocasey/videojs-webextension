@@ -1,6 +1,12 @@
 var document = require('global/document');
 var FileTypes = require('../file-types');
 
+// if we are on firefox we only have local storage
+if (!chrome.storage.sync) {
+	chrome.storage.sync = chrome.storage.local;
+}
+
+
 var Save = function() {
 	var settings = {
 		autoplay: document.getElementById('autoplay').checked,
