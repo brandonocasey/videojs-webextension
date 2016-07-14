@@ -34,7 +34,6 @@ chrome.webRequest.onHeadersReceived.addListener(function(details) {
 }, {urls: UrlMatches}, ['blocking', 'responseHeaders']);
 
 chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse) {
-	console.log('here');
 	if (msg.type === 'data-change') {
 		reloadSettings();
 	}

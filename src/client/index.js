@@ -11,6 +11,13 @@ if (!chrome.storage.sync) {
 
 chrome.storage.sync.get('settings', function(o) {
 	document.body.innerText = "";
+	var container = document.createElement('div');
+	document.body.style = 'margin:0;padding:0;';
+	container.style = 'margin:0;padding:0;background-color:rgb(38,38,38);height:100%;width:100%;display:flex;justify-content: center;align-items: center;'
+	document.body.appendChild(container);
+
+	var videoContainer = document.createElement('div');
+	container.appendChild(videoContainer);
 
 	o.settings = o.settings || {};
 	o.settings.playerSettings = o.settings.playerSettings || {};
@@ -22,14 +29,15 @@ chrome.storage.sync.get('settings', function(o) {
 	var video = document.createElement('video');
 	video.className = 'video-js';
 	video.controls = true;
-	document.body.appendChild(video);
-	document.body.appendChild(document.createElement('br'));
+	videoContainer.appendChild(video);
+	videoContainer.appendChild(document.createElement('br'));
 
 	var download = document.createElement('a');
-	download.innerText = 'Download m3u8';
+	download.innerHTML = '<button>Download ' + path.basename(pathname) + '</button>';
 	download.download = path.basename(pathname);
 	download.href = href;
-	document.body.appendChild(download);
+	download.style = 'display: flex;justify-content:center';
+	videoContainer.appendChild(download);
 
 	var player = window.player = videojs(video, options);
 
