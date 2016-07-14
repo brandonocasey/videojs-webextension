@@ -4,13 +4,20 @@ var FileTypes = require('../utils/file-types');
 var path = require('path');
 var url = require('url');
 var merge = require('lodash.merge');
+var port = chrome.runtime.connect();
 
-if (!chrome.storage.sync) {
-	chrome.storage.sync = chrome.storage.local;
-}
+// clear the non-sense body that exists now
+document.body.innerText = "";
 
-chrome.storage.sync.get('settings', function(o) {
-	document.body.innerText = "";
+// firefox does not support storage access in client script
+port.postMessage({type: 'storage', data: 'settings'});
+port.onMessage.addListener(function(msg) {
+	if (msg.type === 'storage-response') {
+		setup(msg.data);
+	}
+});
+
+var setup = function(o) {
 	var container = document.createElement('div');
 	document.body.style = 'margin:0;padding:0;';
 	container.style = 'margin:0;padding:0;background-color:rgb(38,38,38);height:100%;width:100%;display:flex;justify-content: center;align-items: center;'
@@ -53,5 +60,5 @@ chrome.storage.sync.get('settings', function(o) {
 		}
 		chrome.storage.sync.set(o);
 	});
-});
+};
 

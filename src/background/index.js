@@ -20,23 +20,32 @@ chrome.webRequest.onHeadersReceived.addListener(function(details) {
 	var extension = path.extname(url.parse(details.url).pathname).replace('.', '');
 
 	if (details.type !== 'main_frame' || !extension ||
-		(typeof fileTypes[extension] !== undefined && !fileTypes[extension])) {
+		(typeof fileTypes[extension] !== undefined && fileTypes[extension] === false)) {
+
 		return;
 	}
 
 	var i = details.responseHeaders.length;
 	while(i--) {
-		if ((/Content-type/i).test(details.responseHeaders[i].name)) {
-			details.responseHeaders[i].value = 'text/html';
+		if (!(/Content-Type/i).test(details.responseHeaders[i].name)) {
+			continue;
 		}
+		details.responseHeaders[i].value = 'text/html; charset=utf-8';
+		break;
 	}
-	return {'responseHeaders': details.responseHeaders};
+	return {responseHeaders: details.responseHeaders};
 }, {urls: UrlMatches}, ['blocking', 'responseHeaders']);
 
-chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse) {
-	if (msg.type === 'data-change') {
-		reloadSettings();
-	}
+chrome.runtime.onConnect.addListener(function(port) {
+	port.onMessage.addListener(function(msg) {
+		if (msg.type === 'data-change') {
+			reloadSettings();
+		} else if (msg.type === 'storage') {
+			chrome.storage.sync.get(msg.data, function(o) {
+				port.postMessage({type: 'storage-response', data: o});
+			});
+		}
+	});
 });
 
 // load settings when first loaded
