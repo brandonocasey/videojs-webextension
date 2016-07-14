@@ -1,5 +1,6 @@
 var document = require('global/document');
-var FileTypes = require('../file-types');
+var merge = require('lodash.merge');
+var FileTypes = require('../utils/file-types');
 
 // if we are on firefox we only have local storage
 if (!chrome.storage.sync) {
@@ -16,18 +17,26 @@ var Save = function() {
 	Object.keys(FileTypes).forEach(function(t) {
 		settings.fileTypes[t] = document.getElementById(t).checked;
 	});
-	chrome.storage.sync.set({settings: settings});
+	// tell background about a potential data-change event
+	chrome.storage.sync.set({settings: settings}, function() {
+		chrome.runtime.sendMessage({type: 'data-change'});
+	});
 };
 
 var Restore = function() {
 	chrome.storage.sync.get('settings', function(o) {
-		o.settings = o.settings || {};
-		o.settings.playerSettings = o.settings.playerSettings || {};
-		document.getElementById('autoplay').checked = o.settings.playerSettings.autoplay || true;
-
-		o.settings.fileTypes = o.settings.fileTypes || {};
+		var defaults = {
+			fileTypes: {},
+			playerSettings: {autoplay: true}
+		};
 		Object.keys(FileTypes).forEach(function(t) {
-			document.getElementById(t).checked = o.settings.fileTypes[t] || true;
+			defaults.fileTypes[t] = true;
+		});
+		var settings = merge(defaults, o.settings);
+		document.getElementById('autoplay').checked = settings.playerSettings.autoplay;
+
+		Object.keys(FileTypes).forEach(function(t) {
+			document.getElementById(t).checked = settings.fileTypes[t];
 		});
 	});
 };

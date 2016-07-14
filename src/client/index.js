@@ -1,6 +1,6 @@
 var document = require('global/document');
 var window = require('global/window');
-var FileTypes = require('../file-types');
+var FileTypes = require('../utils/file-types');
 var path = require('path');
 var url = require('url');
 var merge = require('lodash.merge');

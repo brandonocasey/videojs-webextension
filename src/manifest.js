@@ -1,11 +1,5 @@
 var pkg = require('../package.json');
-var FileTypes = require('./file-types.js');
-
-var matches = [];
-Object.keys(FileTypes).forEach(function(t) {
-  matches.push('*://*/*.' + t);
-  matches.push('*://*/*.' + t + '?*');
-});
+var UrlMatches = require('./utils/url-matches');
 
 var manifest = {
   "manifest_version": 2,
@@ -42,14 +36,14 @@ var manifest = {
       "client/index.js"
     ],
     "css": ["client/video-js.min.css"],
-   "run_at": "document_end",
-    "matches": matches,
+    "run_at": "document_end",
+    "matches": UrlMatches,
   }],
   "permissions": [
     "storage",
     "webRequest",
     "webRequestBlocking"
-  ].concat(matches)
+  ].concat(UrlMatches)
 };
 
 
