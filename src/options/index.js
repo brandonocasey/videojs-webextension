@@ -7,6 +7,10 @@ if (!chrome.storage.sync) {
 	chrome.storage.sync = chrome.storage.local;
 }
 
+// create an open port to the extension to tell it when the user
+// changes settings
+var port = chrome.runtime.connect();
+
 var Save = function() {
 	var settings = {
 		playerSettings: {
@@ -17,10 +21,11 @@ var Save = function() {
 	Object.keys(FileTypes).forEach(function(t) {
 		settings.fileTypes[t] = document.getElementById(t).checked;
 	});
-	// tell background about a potential data-change event
+
 	chrome.storage.sync.set({settings: settings}, function() {
-		chrome.runtime.sendMessage({type: 'data-change'});
-	});
+		// tell background about a potential data-change event
+		port.postMessage({type: 'data-change'});
+	})
 };
 
 var Restore = function() {
@@ -119,7 +124,7 @@ var reload = function() {
 	addFileTypes(fileTypeContainer);
 
 	Restore();
-	chrome.storage.sync.get('settigns', function(o) {
+	chrome.storage.sync.get('settings', function(o) {
 		if (typeof o.settings === undefined) {
 			Save();
 		}
