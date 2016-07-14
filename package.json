@@ -17,7 +17,6 @@
     "build:chrome:client:cp": "npm-run-all -p build:chrome:client:cp:*",
     "build:chrome:client:cp:videojs": "cp ./node_modules/video.js/dist/{video-js.min.css,video.min.js} dist/$npm_package_name/client",
     "build:chrome:client:cp:hls": "cp ./node_modules/videojs-contrib-hls/dist/videojs-contrib-hls.min.js dist/$npm_package_name/client",
-    "build:chrome:client:html": "cp ./src/client/index.html dist/$npm_package_name/client/index.html",
     "build:chrome:background": "browserify ./src/background/index.js -o dist/$npm_package_name/background/index.js",
     "build:chrome:popup": "npm-run-all -p build:chrome:popup:*",
     "build:chrome:popup:html": "cp ./src/popup/index.html dist/$npm_package_name/popup/",
@@ -27,9 +26,9 @@
     "build:chrome:options:html": "cp ./src/options/index.html dist/$npm_package_name/options/index.html",
     "build:chrome:img": "cp -R src/img dist/$npm_package_name",
     "prewatch": "npm run clean",
-    "watch": "npm-run-all -p watch:*",
-    "watch:chrome": "nodemon --exec 'npm run --silent build:chrome' -e css,js,html --watch src",
-    "watch:manifest": "nodemon --exec 'npm run --silent build:manifest' --watch src/manifest.js",
+    "watch": "nodemon --exec 'npm-run-all -p watch:*' --watch package.json",
+    "watch:chrome": "nodemon --exec 'npm run build:chrome' -e css,js,html --watch src --ignore src/manifest.js",
+    "watch:manifest": "nodemon --exec 'npm run build:manifest' --watch src/manifest.js",
     "ugly": "find dist -name '*.js' | while read -r f; do uglifyjs \"$f\" -m -c --screw-ie8 -o \"$f\"; done",
     "zip": "cd dist && zip -r -9 ./${npm_package_name}.zip ./${npm_package_name}/ && cd .."
   },
@@ -46,6 +45,7 @@
   },
   "dependencies": {
     "global": "^4.3.0",
+    "lodash.merge": "^4.4.0",
     "video.js": "^5.10.4",
     "videojs-contrib-hls": "^3.1.0"
   }

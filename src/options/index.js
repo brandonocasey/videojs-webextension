@@ -6,10 +6,11 @@ if (!chrome.storage.sync) {
 	chrome.storage.sync = chrome.storage.local;
 }
 
-
 var Save = function() {
 	var settings = {
-		autoplay: document.getElementById('autoplay').checked,
+		playerSettings: {
+			autoplay: document.getElementById('autoplay').checked,
+		},
 		fileTypes: {},
 	};
 	Object.keys(FileTypes).forEach(function(t) {
@@ -21,7 +22,8 @@ var Save = function() {
 var Restore = function() {
 	chrome.storage.sync.get('settings', function(o) {
 		o.settings = o.settings || {};
-		document.getElementById('autoplay').checked = o.settings.autoplay || true;
+		o.settings.playerSettings = o.settings.playerSettings || {};
+		document.getElementById('autoplay').checked = o.settings.playerSettings.autoplay || true;
 
 		o.settings.fileTypes = o.settings.fileTypes || {};
 		Object.keys(FileTypes).forEach(function(t) {

@@ -1,7 +1,13 @@
 var pkg = require('../package.json');
 var FileTypes = require('./file-types.js');
 
-module.exports = {
+var matches = [];
+Object.keys(FileTypes).forEach(function(t) {
+  matches.push('*://*/*.' + t);
+  matches.push('*://*/*.' + t + '?*');
+});
+
+var manifest = {
   "manifest_version": 2,
   // application is a work around for a bug in firefox 49 alpha
   "applications": {
@@ -29,10 +35,23 @@ module.exports = {
     "chrome_style": true
   },
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
+  "content_scripts":[{
+    "js": [
+      "client/video.min.js",
+      "client/videojs-contrib-hls.min.js",
+      "client/index.js"
+    ],
+    "css": ["client/video-js.min.css"],
+   "run_at": "document_end",
+    "matches": matches,
+  }],
   "permissions": [
     "storage",
-    "activeTab",
-    "downloads",
-    "tabs"
-  ]
+    "webRequest",
+    "webRequestBlocking"
+  ].concat(matches)
 };
+
+
+
+module.exports = manifest;
