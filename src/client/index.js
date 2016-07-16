@@ -3,6 +3,7 @@ var window = require('global/window');
 var FileTypes = require('../utils/file-types');
 var path = require('path');
 var url = require('url');
+var querystring = require('querystring');
 var merge = require('lodash.merge');
 var port = chrome.runtime.connect();
 
@@ -10,12 +11,22 @@ var port = chrome.runtime.connect();
 document.body.innerText = "";
 
 // firefox does not support storage access in client script
-port.postMessage({type: 'storage', data: 'settings'});
 port.onMessage.addListener(function(msg) {
+	console.log('here');
 	if (msg.type === 'storage-response') {
 		setup(msg.data);
 	}
 });
+
+port.postMessage({type: 'storage', data: 'settings'});
+
+var getHREF = function() {
+	var href = window.location.href;
+	if (url.parse(href).pathname === '/client/index.html') {
+		href = querystring.parse(url.parse(href).query).url;
+	}
+	return href;
+}
 
 var setup = function(o) {
 	var container = document.createElement('div');
@@ -29,7 +40,7 @@ var setup = function(o) {
 	o.settings = o.settings || {};
 	o.settings.playerSettings = o.settings.playerSettings || {};
 	var options = merge({autoplay: true}, o.settings.playerSettings)
-	var href = window.location.href;
+	var href = getHREF();
 	var pathname = url.parse(href).pathname;
 	var extension = path.extname(pathname).replace('.', '');
 
@@ -38,6 +49,7 @@ var setup = function(o) {
 	video.controls = true;
 	videoContainer.appendChild(video);
 	videoContainer.appendChild(document.createElement('br'));
+
 
 	var download = document.createElement('a');
 	download.innerHTML = '<button>Download ' + path.basename(pathname) + '</button>';
@@ -48,17 +60,8 @@ var setup = function(o) {
 
 	var player = window.player = videojs(video, options);
 
-	player.src({src: window.location.href, type: FileTypes[extension]});
+	player.src({src: href, type: FileTypes[extension]});
 
-	chrome.storage.sync.get('recentVideos', function(o) {
-		o.recentVideos = o.recentVideos || [];
-		if (o.recentVideos.indexOf(href) === -1) {
-			o.recentVideos.push(href);
-		}
-		if (o.recentVideos.length > 10) {
-			o.recentVideos.pop();
-		}
-		chrome.storage.sync.set(o);
-	});
+	port.postMessage({type: 'recent-video', data: href});
 };
 

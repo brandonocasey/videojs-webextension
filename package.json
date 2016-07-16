@@ -17,6 +17,7 @@
     "build:chrome:client:cp": "npm-run-all -p build:chrome:client:cp:*",
     "build:chrome:client:cp:videojs": "cp ./node_modules/video.js/dist/{video-js.min.css,video.min.js} dist/$npm_package_name/client",
     "build:chrome:client:cp:hls": "cp ./node_modules/videojs-contrib-hls/dist/videojs-contrib-hls.min.js dist/$npm_package_name/client",
+    "build:chrome:client:cp:html": "cp ./src/client/index.html dist/$npm_package_name/client",
     "build:chrome:background": "browserify ./src/background/index.js -o dist/$npm_package_name/background/index.js",
     "build:chrome:popup": "npm-run-all -p build:chrome:popup:*",
     "build:chrome:popup:html": "cp ./src/popup/index.html dist/$npm_package_name/popup/",

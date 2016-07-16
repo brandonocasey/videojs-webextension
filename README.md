@@ -8,4 +8,6 @@ Use [video.js](http://github.com/videojs/video.js) and [videojs-contrib-hls](htt
 download it on the [chrome webstore](https://chrome.google.com/webstore/detail/cebdpbolebkmgidigfffifoemdcbhibf)
 
 # TODO
-* find out why FireFox does not support Content-Type header re-write in background.js (this is the only thing limiting Firefox support)
+* find out why FireFox does not support Content-Type header re-write in background.js
+	* rip out firefox specific code
+* what other file types can video.js support that the browser does not?
