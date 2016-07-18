@@ -11,3 +11,5 @@ download it on the [chrome webstore](https://chrome.google.com/webstore/detail/c
 * find out why FireFox does not support Content-Type header re-write in background.js
 	* rip out firefox specific code
 * what other file types can video.js support that the browser does not?
+* Re-write other web players on the net with video.js
+* include video.js when plain html video elements are in use

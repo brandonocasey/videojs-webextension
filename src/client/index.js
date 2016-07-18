@@ -1,5 +1,7 @@
 var document = require('global/document');
 var window = require('global/window');
+var videojs = require('video.js');
+var hls = require('videojs-contrib-hls');
 var FileTypes = require('../utils/file-types');
 var path = require('path');
 var url = require('url');
@@ -12,7 +14,6 @@ document.body.innerText = "";
 
 // firefox does not support storage access in client script
 port.onMessage.addListener(function(msg) {
-	console.log('here');
 	if (msg.type === 'storage-response') {
 		setup(msg.data);
 	}

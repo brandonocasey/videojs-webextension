@@ -31,11 +31,9 @@ var manifest = {
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
   "content_scripts":[{
     "js": [
-      "client/video.min.js",
-      "client/videojs-contrib-hls.min.js",
       "client/index.js"
     ],
-    "css": ["client/video-js.min.css"],
+    "css": ["client/index.css"],
     "run_at": "document_end",
     "matches": UrlMatches,
   }],
