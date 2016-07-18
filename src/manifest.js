@@ -1,6 +1,13 @@
 var pkg = require('../package.json');
 var UrlMatches = require('./utils/url-matches');
 
+var ucwords = function(str) {
+  str = str.toLowerCase();
+  return str.replace(/(^([a-zA-Z\p{M}]))|([ -][a-zA-Z\p{M}])/g,
+    function($1){
+      return $1.toUpperCase();
+    });
+};
 var manifest = {
   "manifest_version": 2,
   // application is a work around for a bug in firefox 49 alpha
@@ -9,8 +16,11 @@ var manifest = {
       "id": "nope@example.com"
     }
   },
-  "name": pkg.name,
+  "name": ucwords(pkg.name.replace('-', ' ')),
   "version": pkg.version,
+  "description": pkg.description,
+  "author": pkg.author,
+  "homepage_url": pkg.repository,
   "background": {
     "scripts": ["background/index.js"],
     "persistent": true
