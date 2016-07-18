@@ -5,7 +5,9 @@ Use [video.js](http://github.com/videojs/video.js) and [videojs-contrib-hls](htt
 * allow videos to autoplay when opened
 * allow file types to be included/excluded from playback override
 
-download it on the [chrome webstore](https://chrome.google.com/webstore/detail/cebdpbolebkmgidigfffifoemdcbhibf)
+# Download
+* [Chrome](https://chrome.google.com/webstore/detail/cebdpbolebkmgidigfffifoemdcbhibf)
+* [Firefox](https://addons.mozilla.org/en-US/firefox/addon/videojs-webextension/)
 
 # TODO
 * find out why FireFox does not support Content-Type header re-write in background.js
